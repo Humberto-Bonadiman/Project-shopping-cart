@@ -42,10 +42,10 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-function fetchComputer () {
+function fetchComputer() {
   fetch(apiUrl)
-    .then(response => response.json())
-    .then(data => data.results.forEach((product) => {
+    .then((response) => response.json())
+    .then((data) => data.results.forEach((product) => {
       const objectProduct = {
         sku: product.id,
         name: product.title,
