@@ -45,7 +45,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 function fetchComputer () {
   fetch(apiUrl)
     .then(response => response.json())
-    .then((data) => data.results.forEach((product) => {
+    .then(data => data.results.forEach((product) => {
       const objectProduct = {
         sku: product.id,
         name: product.title,
@@ -53,10 +53,9 @@ function fetchComputer () {
       };
       const items = document.querySelector('.items');
       items.appendChild(createProductItemElement(objectProduct));
-      console.log(objectProduct);
     }));
 }
 
 window.onload = () => {
   fetchComputer();
-}
+};
