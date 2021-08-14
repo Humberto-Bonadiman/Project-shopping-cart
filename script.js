@@ -42,6 +42,10 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// Requisito 2
+// Nesta parte eu consultei o repositório do Enzo Thomé
+/* Fonte: https://github.com/tryber/sd-014-b-project-shopping-cart/pull/74/commits/1428ddde588652e0864d91d00b767e33207ae0d8 */
+
 function addProducts() {
   const itemAddButton = document.querySelectorAll('.item__add');
   const getIdItem = itemAddButton.forEach((product) => {
@@ -62,6 +66,8 @@ function addProducts() {
   });
   return getIdItem;
 }
+
+// Requisito 1
 
 function fetchComputer() {
   fetch(apiUrl)
