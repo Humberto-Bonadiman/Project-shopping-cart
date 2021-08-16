@@ -1,4 +1,5 @@
 const apiUrl = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
+const theCart = document.querySelector('ol');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -30,9 +31,27 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito 4
+
+async function setItem() {
+  const items = theCart.innerHTML;
+  localStorage.setItem('cart__items', items);
+}
+
+// Requisito 3 - function cartItemClickListener
+
 function cartItemClickListener(event) {
-  const cartItems = document.querySelector('.cart__items');
-  return cartItems.removeChild(event.target);
+  document.querySelector('.cart__items').removeChild(event.target);
+  setItem();
+}
+
+function getItem() {
+  if (localStorage.getItem('cart__items')) {
+    const items = localStorage.getItem('cart__items');
+    theCart.innerHTML = items;
+    const lis = document.querySelectorAll('.cart__item');
+      lis.forEach((li) => li.addEventListener('click', cartItemClickListener));
+  }
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -43,13 +62,12 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// Requisito 2
+// Requisito 2 - function addProducts
 // Nesta parte eu consultei o repositório do Enzo Thomé
 /* Fonte: https://github.com/tryber/sd-014-b-project-shopping-cart/pull/74/commits/1428ddde588652e0864d91d00b767e33207ae0d8 */
 
-function addProducts() {
-  const itemAddButton = document.querySelectorAll('.item__add');
-  const getIdItem = itemAddButton.forEach((product) => {
+async function addProducts() {
+  document.querySelectorAll('.item__add').forEach((product) => {
     product.addEventListener('click', () => {
       const idButton = product.parentNode.firstElementChild.innerText;
       const apiItem = `https://api.mercadolibre.com/items/${idButton}`;
@@ -62,15 +80,15 @@ function addProducts() {
             salePrice: item.price,
           };
           document.querySelector('.cart__items').appendChild(createCartItemElement(cart));
-        }); 
+          setItem();
+        });
     });
   });
-  return getIdItem;
 }
 
-// Requisito 1
+// Requisito 1 - function fetchComputer
 
-function fetchComputer() {
+async function fetchComputer() {
   fetch(apiUrl)
     .then((response) => response.json())
     .then((data) => data.results.forEach((product) => {
@@ -83,9 +101,11 @@ function fetchComputer() {
       items.appendChild(createProductItemElement(objectProduct));
     }))
     .then(() => addProducts())
-    .then(() => cartItemClickListener());
+    .then(() => cartItemClickListener())
+    .then(() => setItem());
 }
 
 window.onload = () => {
   fetchComputer();
+  getItem();
 };
