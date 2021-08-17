@@ -2,6 +2,7 @@ const apiUrl = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
 const theCart = document.querySelector('ol');
 const totalPrice = document.querySelector('.total-price');
 const emptyCart = document.querySelector('.empty-cart');
+// const itemsSection = document.querySelector('.items');
 let sum = 0;
 
 function createProductImageElement(imageSource) {
@@ -28,10 +29,6 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
-}
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
 }
 
 // Requisito 4
@@ -118,7 +115,25 @@ emptyCart.addEventListener('click', () => {
   totalPrice.innerText = 0;
 });
 
+function deleteLoadingMessage() {
+  // if (itemsSection.querySelector('.loading')) {
+  const getLoading = document.querySelector('.loading');
+  getLoading.innerText = '';
+  getLoading.remove();
+/*   } else {
+    const loading = document.createElement('h4');
+    loading.classList.add('loading');
+    loading.innerText = 'loading...';
+    itemsSection.appendChild(loading);
+  } */
+}
+
+async function apiRequest() {
+  await fetchComputer();
+  deleteLoadingMessage();
+} 
+
 window.onload = () => {
-  fetchComputer();
+  apiRequest();
   getItem();
 };
