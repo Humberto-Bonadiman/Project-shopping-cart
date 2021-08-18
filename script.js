@@ -28,10 +28,6 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 // Requisito 4
 
 async function setItem() {
@@ -39,7 +35,7 @@ async function setItem() {
   localStorage.setItem('cart__items', items);
 }
 
-// Requisito 3 - function cartItemClickListener
+// Requisito 3 e parte do 5 - function cartItemClickListener
 async function cartItemClickListener(event) {
   const priceItem = parseFloat(event.target.innerText.split('$')[1]);
   sum -= priceItem;
@@ -47,6 +43,8 @@ async function cartItemClickListener(event) {
   document.querySelector('.cart__items').removeChild(event.target);
   setItem();
 }
+
+// Requisito 4
 
 function getItem() {
   if (localStorage.getItem('cart__items')) {
@@ -56,6 +54,8 @@ function getItem() {
     lis.forEach((li) => li.addEventListener('click', cartItemClickListener));
   }
 }
+
+// Parte do requisito 5
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -89,6 +89,8 @@ async function addProducts() {
   });
   setItem();
 }
+
+// Requisito 7
 
 function createOrDeleteLoadingMessage() {
   const itemsSection = document.querySelector('.items');
@@ -124,10 +126,14 @@ async function fetchComputer() {
     .then(() => setItem());
 }
 
+// Requisito 6
+
 emptyCart.addEventListener('click', () => {
   theCart.innerHTML = '';
   totalPrice.innerText = 0;
 });
+
+// Requisito 7
 
 setTimeout(async function apiRequest() {
   await fetchComputer();
