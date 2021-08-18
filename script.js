@@ -2,7 +2,6 @@ const apiUrl = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
 const theCart = document.querySelector('ol');
 const totalPrice = document.querySelector('.total-price');
 const emptyCart = document.querySelector('.empty-cart');
-// const itemsSection = document.querySelector('.items');
 let sum = 0;
 
 function createProductImageElement(imageSource) {
@@ -22,13 +21,15 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
+}
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
 }
 
 // Requisito 4
@@ -39,7 +40,6 @@ async function setItem() {
 }
 
 // Requisito 3 - function cartItemClickListener
-
 async function cartItemClickListener(event) {
   const priceItem = parseFloat(event.target.innerText.split('$')[1]);
   sum -= priceItem;
@@ -71,7 +71,6 @@ function createCartItemElement({ sku, name, salePrice }) {
 // Requisito 2 - function addProducts
 // Nesta parte eu consultei o repositório do Enzo Thomé
 /* Fonte: https://github.com/tryber/sd-014-b-project-shopping-cart/pull/74/commits/1428ddde588652e0864d91d00b767e33207ae0d8 */
-
 async function addProducts() {
   document.querySelectorAll('.item__add').forEach((product) => {
     product.addEventListener('click', () => {
@@ -91,8 +90,23 @@ async function addProducts() {
   setItem();
 }
 
-// Requisito 1 - function fetchComputer
+function createOrDeleteLoadingMessage() {
+  const itemsSection = document.querySelector('.items');
+  if (itemsSection.querySelector('.loading')) {
+    const getLoading = document.querySelector('.loading');
+    // getLoading.innerText = '';
+    getLoading.remove();
+   } else {
+    const loading = document.createElement('h4');
+    loading.classList.add('loading');
+    loading.innerText = 'loading...';
+    itemsSection.appendChild(loading);
+  }
+}
 
+createOrDeleteLoadingMessage();
+
+// Requisito 1 - function fetchComputer
 async function fetchComputer() {
   fetch(apiUrl)
     .then((response) => response.json())
@@ -115,25 +129,11 @@ emptyCart.addEventListener('click', () => {
   totalPrice.innerText = 0;
 });
 
-function deleteLoadingMessage() {
-  // if (itemsSection.querySelector('.loading')) {
-  const getLoading = document.querySelector('.loading');
-  getLoading.innerText = '';
-  getLoading.remove();
-/*   } else {
-    const loading = document.createElement('h4');
-    loading.classList.add('loading');
-    loading.innerText = 'loading...';
-    itemsSection.appendChild(loading);
-  } */
-}
-
-async function apiRequest() {
+setTimeout(async function apiRequest() {
   await fetchComputer();
-  deleteLoadingMessage();
-} 
+  createOrDeleteLoadingMessage();
+}, 3000);
 
 window.onload = () => {
-  apiRequest();
   getItem();
 };
